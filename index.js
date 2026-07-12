@@ -18,7 +18,18 @@ const movies = [
 
 app.query('/movies', (req, res) => {
   const searchParams= req.body;
-  res.json(searchParams);
+  const filteredMovies = movies.filter(movie => {
+    for (const key in searchParams) {
+      if (movie[key] === undefined || movie[key] != searchParams[key]) {
+        return false;
+      }
+    }
+    return true;
+  });
+  if (filteredMovies.length === 0) {
+    return res.status(404).json({ message: 'Nenhum filme encontrado com os parâmetros fornecidos.' });
+  }
+  res.json(filteredMovies);
 });
 
 app.get('/movies', (req, res) => {
